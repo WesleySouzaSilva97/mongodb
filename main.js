@@ -44,8 +44,12 @@ const criarCliente = async  (nomeCli, foneCli, cpfCli) => {
 // CRUD Read - Função para listar todos os clientes cadastrados
 const listarClientes = async () => {
     try {
-        // A linha a baixo lista todos os clientes cadastrados 
-        const clientes = await clienteModel.find()
+        // A linha a baixo lista todos os clientes cadastrados por ordem alfabetica
+        const clientes = await clienteModel.find().sort(
+            {
+                nomeCliente: 1
+
+        })
         console.log(clientes)
 
     } catch (error) {
@@ -66,12 +70,25 @@ const buscarClientes = async (nome) => {
         )
         
         //calcular a similaridade entre os nimes  retornados e o nome pesquisado
-        const nomesClientes = clientes.map(cliente.nomeCliente)
+        const nomesClientes = cliente.map(cliente => cliente.nomeCliente)
         const match = stringSimilarity.findBestMatch(nome, nomesClientes)
+        if (nomesClientes.length === 0) {
+            console.log("Cliente não cadastrado")
+        
+        } else {
+            const match = stringSimilarity.findBestMatch(nome, nomesClientes)
+       
         //clientes com melhor similaridade
         const melhorCliente =cliente.find(cliente => cliente. nomeCliente == match.bestMatch.target)
-        console.Console.log(melhorCliente)
-
+       //formatação da data
+       const clienteFormatado = {
+        nomeCliente: melhorCliente.nomeCliente,
+        foneCliente: melhorCliente.foneCliente,
+        cpf: melhorCliente.cpf,
+        dataCadastro: melhorCliente.dataCadastro.toLocaleDateString('pt-br')
+       }
+       console.log(clienteFormatado)
+    }
     } catch (error) {
         console.log(error)
     }
@@ -89,7 +106,7 @@ const app = async() => {
    //await listarClientes()
 
    //CRUD - Read (Exemplo 2 - buscar clientes
-   await buscarClientes("Gabriel")
+   await buscarClientes("Elen")
 
     await desconectar()
 }
